@@ -75,4 +75,18 @@ app.post("/auth/register", async (req, res) => {
   if (ClientExists) {
     return res.status(422).json({ mgs: "Por favor, utilize outro email !" });
   }
+
+  //create password 
+  const salt = await bcrypt.genSalt(12);
+  const passwordHash = await bcrypt.hash(password, salt);
+
+  //create Client
+  const client = new Client({
+    fullName,
+    email,
+    password,
+    phone,
+    age,
+    n_acession,
+  })
 });
