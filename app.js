@@ -33,6 +33,20 @@ app.get("/", (req, res) => {
   res.status(200).json({ mgs: "Bem-vindo à API System Bank" });
 });
 
+
+/* Routes Private */
+app.get("/cliente/:clientId", async (req, res) => {
+
+  const id = req.params.clientId;
+
+  //check if the client exists
+  const client = await Client.findById(id, '-password');
+
+  if (!client) {
+    return res.status(404).json({ mgs: "Utilizador não encontrado não existe!" });
+  }
+});
+
 //Register user
 app.post("/auth/register", async (req, res) => {
   const { fullName, email, phone, password, confirmPassword, age, n_acession } =
