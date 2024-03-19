@@ -36,16 +36,25 @@ app.get("/", (req, res) => {
 
 /* Routes Private */
 app.get("/cliente/:clientId", async (req, res) => {
-
   const id = req.params.clientId;
 
-  //check if the client exists
-  const client = await Client.findById(id, '-password');
+  try {
+    // Verificar se o cliente existe
+    const client = await Client.findById(id, '-password');
 
-  if (!client) {
-    return res.status(404).json({ mgs: "Utilizador não encontrado não existe!" });
+    if (!client) {
+      return res.status(404).json({ msg: "Utilizador não encontrado!" });
+    }
+
+    // Cliente encontrado, retornar os detalhes do cliente
+    return res.status(200).json(client);
+  } catch (error) {
+    // Se ocorrer algum erro ao buscar o cliente
+    console.error("Erro ao buscar o cliente:", error);
+    return res.status(500).json({ msg: "Erro do servidor ao buscar o cliente!" });
   }
 });
+
 
 //Register user
 app.post("/auth/register", async (req, res) => {
