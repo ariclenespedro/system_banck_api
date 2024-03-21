@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 3000;
 //config JSON response
 app.use(express.json());
 
-const Client = require("./models/Client");
+const Client = require("./src/models/Client");
 
 // Iniciando o servidor
 app.listen(PORT, () => {
@@ -74,6 +74,7 @@ function checkToken(req,res,next) {
   
 }
 
+//
 
 //Register user
 app.post("/auth/register", async (req, res) => {
