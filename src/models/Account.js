@@ -1,12 +1,15 @@
 const mongoose = require('mongoose');
 
-const Account = mongoose.model('Account',{
-    n_account : Number,
-    type_account : String,
+const AccountSchema = new mongoose.Schema({
+    n_account: Number,
+    type_account: String,
     currency: String,
-    descryption : String,
-    balance: Number(15,2),
-    iban : String,
-    cliente_id: Object
-
+    description: {type: String, required: false},
+    balance: String, // Armazenar como string para manter a precisão
+    iban: String,
+    client_id: mongoose.Schema.Types.ObjectId // Associar a um cliente pelo ID
 });
+
+const Account = mongoose.model('Account', AccountSchema);
+
+module.exports = Account;
