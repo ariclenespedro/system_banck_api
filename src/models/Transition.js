@@ -23,7 +23,13 @@ const Transition = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
+    },
+    entity_id: {
+        type: Number,
+        required: true,
+        unique: true,
     }
+
 });
 
 const Transaction = mongoose.model('Transaction', transactionSchema);

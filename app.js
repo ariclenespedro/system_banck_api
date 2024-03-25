@@ -207,6 +207,20 @@ app.post("/auth/register", async (req, res) => {
   }
 });
 
+//Payment references route
+app.post('/cliente/payments/references', async (req, res) => {
+  try {
+    const {n_reference,amount,clientID,entity_id} = req.body;
+
+    // Verificar se os dados necessários foram fornecidos
+    if (!clientId || !amount) {
+      return res.status(400).json({ message: 'É necessário fornecer o ID do cliente e o valor da transação' });
+    }
+  } catch (error) {
+    
+  }
+})
+
 //Login User
 app.post('/auth/login', async(req, res) => {
   const {email, password} = req.body;
