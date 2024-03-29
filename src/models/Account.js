@@ -7,8 +7,8 @@ const AccountSchema = new mongoose.Schema({
     description: {type: String, required: false},
     balance: String, // Armazenar como string para manter a precisão
     iban: String,
-    client_id: mongoose.Schema.Types.ObjectId // Associar a um cliente pelo ID
-});
+    client_id: mongoose.Schema.Types.ObjectId, // Associar a um cliente pelo ID
+},{timestamps: true});
 
 const Account = mongoose.model('Account', AccountSchema);
 

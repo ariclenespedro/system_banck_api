@@ -7,6 +7,6 @@ const Client = mongoose.model('Client',{
     phone: String,
     n_acession: Number,
     password: String
-});
+},{timestamps: true});
 
 module.exports = Client;
