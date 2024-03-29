@@ -1,5 +1,95 @@
-const {Client: clienteModel } = require('../models/Client');
+const { response } = require("express");
+const Client = require("../models/Client");
 
-const serviceController = {}
+const bcrypt = require("bcrypt");
+
+const serviceController = {
+  create: async (req, res, next) => {
+    try {
+      const {
+        fullName,
+        email,
+        phone,
+        password,
+        confirmPassword,
+        age,
+        n_acession,
+      } = req.body;
+
+      // Validations
+      if (!fullName) {
+        return res
+          .status(422)
+          .json({ msg: "O nome completo do cliente é obrigatório!" });
+      }
+      if (!email) {
+        return res
+          .status(422)
+          .json({ msg: "O email do cliente é obrigatório!" });
+      }
+      if (!phone || !/^\d{9}$/.test(phone)) {
+        return res
+          .status(422)
+          .json({
+            msg: "O número de telefone do cliente é obrigatório e deve ter 9 dígitos!",
+          });
+      }
+      if (!password) {
+        return res
+          .status(422)
+          .json({ msg: "A palavra-passe do cliente é obrigatório!" });
+      }
+      if (!age || age < 18) {
+        return res
+          .status(422)
+          .json({ msg: "A idade mínima do cliente deve ser 18 anos!" });
+      }
+      if (!n_acession || !/^\d{8}$/.test(n_acession)) {
+        return res
+          .status(422)
+          .json({
+            msg: "O número de adesão do cliente é obrigatório e deve ter 8 dígitos!",
+          });
+      }
+      if (confirmPassword !== password) {
+        return res.status(422).json({ msg: "As senhas são diferentes!" });
+      }
+
+      //Check email address Client
+      const ClientExists = await Client.findOne({ email: email });
+      if (ClientExists) {
+        return res
+          .status(422)
+          .json({ mgs: "Por favor, utilize outro email !" });
+      }
+
+      //check n_acession exist
+      const n_acessionExist = await Client.findOne({ n_acession: n_acession });
+      if (n_acessionExist) {
+        return res.status(422).json({ msg: "Este número de Adesão já existe" });
+      }
+
+      //create password
+      const salt = await bcrypt.genSalt(12);
+      const passwordHash = await bcrypt.hash(password, salt);
+
+      //create Client
+      const client = new Client({
+        fullName,
+        email,
+        password: passwordHash,
+        phone,
+        age,
+        n_acession,
+      });
+
+      await client.save();
+      res.status(201).json({response, msg: "Cliente registrado com sucesso!" });
+    } catch (error) {
+      console.log(error);
+      res.status({ msg: "Erro do servidor, tente novamente!" });
+    }
+  },
+};
 
 module.exports = serviceController;
