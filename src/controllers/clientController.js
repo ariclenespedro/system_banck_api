@@ -3,7 +3,7 @@ const Client = require("../models/Client");
 
 const bcrypt = require("bcrypt");
 
-const serviceController = {
+const clientController = {
   create: async (req, res, next) => {
     try {
       const {
@@ -84,7 +84,7 @@ const serviceController = {
       });
 
       await client.save();
-      res.status(201).json({response, msg: "Cliente registrado com sucesso!" });
+      res.status(201).json({client, msg: "Cliente registrado com sucesso!" });
     } catch (error) {
       console.log(error);
       res.status({ msg: "Erro do servidor, tente novamente!" });
@@ -92,4 +92,4 @@ const serviceController = {
   },
 };
 
-module.exports = serviceController;
+module.exports = clientController;

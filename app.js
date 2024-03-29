@@ -3,7 +3,6 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 
-const jwt = require("jsonwebtoken");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -164,45 +163,3 @@ app.post('/cliente/payments/references', async (req, res) => {
   }
 })
 
-//Login User
-app.post('/auth/login', async(req, res) => {
-  const {email, password} = req.body;
-
-  //validadion
-  if (!email) {
-    return res.status(422).json({ msg: "O email do cliente é obrigatório!" });
-  }
-  if (!password) {
-    return res.status(422).json({ msg: "A palavra-passe do cliente é obrigatório!" });
-  }
-
-  //Check email address Client
-  const client = await Client.findOne({ email: email });
-  if (!client) {
-    return res.status(404).json({ mgs: "Cliente não existe!" });
-  }
-
-  //check if password match
-  const checkPassword = await bcrypt.compare(password, client.password);
-
-  if (!checkPassword) {
-    return res.status(422).json({ mgs: "Senha incorrecta!" });
-  }
-
-  try {
-
-    const secret = process.env.SECRET;
-    const token = jwt.sign(
-      {
-        id: client._id,
-      },
-      secret,
-    )
-    res.status(200).json({msg: 'Login efectuado com sucesso!', token, client});
-    
-  } catch (error) {
-    console.log(error);
-    res.status({msg:"Erro do servidor, tente novamente!"});
-  }
-
-});
