@@ -23,6 +23,11 @@ app.listen(PORT, () => {
 const db = require('./src/config/database');
 db();
 
+//Routers
+const routes = require('./src/routes/router');
+
+app.use('/api', routes);
+
 
 // Definindo uma rota Pública.
 app.get("/", (req, res) => {
