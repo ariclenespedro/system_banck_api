@@ -20,14 +20,9 @@ app.listen(PORT, () => {
 });
 
 // Conexão com o MongoDB
-mongoose
-  .connect("mongodb://localhost:27017/system_bank_db")
-  .then(() => {
-    console.log("Conexão com o MongoDB estabelecida");
-  })
-  .catch((err) => {
-    console.error("Erro ao conectar ao MongoDB", err);
-});
+const db = require('./src/config/database');
+db();
+
 
 // Definindo uma rota Pública.
 app.get("/", (req, res) => {
