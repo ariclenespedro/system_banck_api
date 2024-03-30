@@ -1,8 +1,10 @@
 const router = require('express').Router();
 
 //Client routes
-const servicesRouter = require('./clients');
+const clientRouter = require('./clients');
+const accountRouter = require('./accounts');
 
-router.use("/",servicesRouter);
+router.use("/",clientRouter);
+router.use("/",accountRouter);
 
 module.exports = router;
