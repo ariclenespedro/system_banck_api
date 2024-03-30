@@ -1,4 +1,3 @@
-const { response } = require("express");
 const Client = require("../models/Client");
 
 const bcrypt = require("bcrypt");
@@ -89,6 +88,26 @@ const clientController = {
       console.log(error);
       res.status({ msg: "Erro do servidor, tente novamente!" });
     }
+  },
+  getClient: async (req, res, next) =>{
+
+    try {
+      const id = req.params.clientId;
+      // Verificar se o cliente existe
+      const client = await Client.findById(id, '-password');
+  
+      if (!client) {
+        return res.status(404).json({ msg: "Utilizador não encontrado!" });
+      }
+  
+      // Cliente encontrado, retornar os detalhes do cliente
+      return res.status(200).json(client);
+    } catch (error) {
+      // Se ocorrer algum erro ao buscar o cliente
+      console.error("Erro ao buscar o cliente:", error);
+      return res.status(500).json({ msg: "Erro do servidor ao buscar o cliente!" });
+    }
+
   },
 };
 
