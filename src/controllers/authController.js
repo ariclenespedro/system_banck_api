@@ -63,6 +63,10 @@ const authController = {
       if (!isPasswordCorrect) {
         return res.status(400).json({ message: 'Senha atual incorreta.' });
       }
+
+      if(!newPassword){
+        return res.status(400).json({ message: 'O campo nova palavra-passe é obrigatório!' });
+      }
   
       // Gerar hash para a nova senha
       const salt = await bcrypt.genSalt(10);
