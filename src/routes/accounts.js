@@ -8,4 +8,9 @@ router.route("/cliente/account/register").post(
   (req, res) => accountController.create(req, res)
 );
 
+router.route("/client/:clientId/account").get(
+  (req, res, next) => authController.checkToken(req, res, next),
+  (req, res) => accountController.getDataAccount(req, res)
+);
+
 module.exports = router;

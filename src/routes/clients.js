@@ -6,7 +6,8 @@ const clentController = require("../controllers/clientController");
 //registrar client router
 router
   .route("/auth/register")
-  .post((req, res) => clentController.create(req, res));
+  .post((req, res, next) => authController.checkToken(req, res, next),  
+  (req, res) => clentController.create(req, res));
 
 //login do client router
 router.route("/auth/login").post((req, res) => authController.login(req, res));
