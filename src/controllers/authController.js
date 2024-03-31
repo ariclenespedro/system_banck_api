@@ -65,6 +65,35 @@ const authController = {
       res.status(400).json({ msg: "Token Inválido!" });
     }
   },
+  changePassword: async (req, res) =>{
+    try {
+      const { clientId, currentPassword, newPassword } = req.body;
+  
+      // Verificar se o cliente existe
+      const client = await Client.findById(clientId);
+      if (!client) {
+        return res.status(404).json({ message: 'Cliente não encontrado.' });
+      }
+  
+      // Verificar se a senha atual fornecida está correta
+      const isPasswordCorrect = await bcrypt.compare(currentPassword, client.password);
+      if (!isPasswordCorrect) {
+        return res.status(400).json({ message: 'Senha atual incorreta.' });
+      }
+  
+      // Gerar hash para a nova senha
+      const salt = await bcrypt.genSalt(10);
+      const hashedNewPassword = await bcrypt.hash(newPassword, salt);
+  
+      // Atualizar a senha do cliente no banco de dados
+      await Client.findByIdAndUpdate(clientId, { password: hashedNewPassword });
+  
+      return res.status(200).json({ message: 'Senha alterada com sucesso.' });
+    } catch (error) {
+      console.error('Erro ao alterar a senha:', error);
+      return res.status(500).json({ message: 'Erro ao alterar a senha.' });
+    }
+  }
 };
 
 module.exports = authController;
