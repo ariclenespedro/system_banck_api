@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const Transition = new mongoose.Schema({
+const transactionSchema = new mongoose.Schema({
     n_reference: {
         type:Number, 
         required: true, 
@@ -28,7 +28,12 @@ const Transition = new mongoose.Schema({
         type: Number,
         required: true,
         unique: true,
+    },
+    description: {
+        type: String,
+        required: true,
     }
+
 
 },{timestamps: true});
 

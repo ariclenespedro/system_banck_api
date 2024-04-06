@@ -4,7 +4,7 @@ const Client = require('../models/Client');
 const transactionController = {
     paymentForReferences: async (req,res) => {
         try {
-            const {clientId, n_reference, amount, entity_id } = req.body;
+            const {clientId, n_reference, amount, entity_id, description } = req.body;
 
             if (!client) {
                 return res.status(404).json({ message: 'Cliente não encontrado.' });
@@ -20,6 +20,10 @@ const transactionController = {
             if(!entity_id){
                 return res.status(400).send({message:"O código da Entidade é obrigatório."});
             }
+
+            if(!description){
+              return res.status(400).send({message:"A descrição da transação é obrigatória."});
+          }
 
             if(entity_id === 1140223){
                 return res.status(422).json({ msg: "O código da Entidade é desconhecida!" });
