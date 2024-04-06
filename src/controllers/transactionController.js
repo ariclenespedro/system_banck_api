@@ -4,10 +4,13 @@ const Client = require('../models/Client');
 const transactionController = {
     paymentForReferences: async (req,res) => {
         try {
-            const {clientId, n_reference, amount, entity_id, description } = req.body;
+          const client_id = req.params.client_id;
+            const { n_reference, amount, entity_id, description } = req.body;
 
+            // Verifique se o cliente existe
+            const client = await Client.findById(client_id);
             if (!client) {
-                return res.status(404).json({ message: 'Cliente não encontrado.' });
+              return res.status(404).json({ message: "Cliente não encontrado" });
             }
             if (client.balance < amount) {
             return res.status(400).json({ message: 'Saldo insuficiente para realizar a transação.' });
@@ -39,9 +42,10 @@ const transactionController = {
             const newTransaction = new Transaction({
               n_reference,
               amount,
-              client: clientId, // Associar a transação ao cliente autenticado
+              client: client.id, // Associar a transação ao cliente autenticado
               status: 'completed',
-              entity_id
+              entity_id,
+              description: description,
             });
         
             // Salvar a transação no banco de dados

@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const transactionSchema = new mongoose.Schema({
     n_reference: {
-        type:Number, 
+        type:String, 
         required: true, 
         unique: true
     },
@@ -25,7 +25,7 @@ const transactionSchema = new mongoose.Schema({
         default: Date.now
     },
     entity_id: {
-        type: Number,
+        type: String,
         required: true,
         unique: true,
     },
