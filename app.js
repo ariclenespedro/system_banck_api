@@ -49,14 +49,14 @@ app.post('/cliente/payments/references', async (req, res) => {
       return res.status(400).json({ message: 'É necessário fornecer o ID do cliente e o valor da transação' });
     }
     if (!n_reference) {
-      return res.status(422).json({ msg: "O número de referência é obrigatório!" });
+      return res.status(422).json({ message: "O número de referência é obrigatório!" });
     }
     if (!entity_id) {
-      return res.status(422).json({ msg: "O ID da Entidade é obrigatório!" });
+      return res.status(422).json({ message: "O ID da Entidade é obrigatório!" });
     }
 
     if(entity_id === 1140223){
-      return res.status(422).json({ msg: "O ID da Entidade desconhecida!" });
+      return res.status(422).json({ message: "O ID da Entidade desconhecida!" });
     }
   } catch (error) {
     

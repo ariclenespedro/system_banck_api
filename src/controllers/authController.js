@@ -12,12 +12,12 @@ const authController = {
       if (!email) {
         return res
           .status(422)
-          .json({ msg: "O email do cliente é obrigatório!" });
+          .json({ message: "O email do cliente é obrigatório!" });
       }
       if (!password) {
         return res
           .status(422)
-          .json({ msg: "A palavra-passe do cliente é obrigatório!" });
+          .json({ message: "A palavra-passe do cliente é obrigatório!" });
       }
 
       //Check email address Client
@@ -42,10 +42,10 @@ const authController = {
       );
       res
         .status(200)
-        .json({ msg: "Login efectuado com sucesso!", token, client });
+        .json({ message: "Login efectuado com sucesso!", token, client });
     } catch (error) {
       console.log(error);
-      res.status({ msg: "Erro do servidor, tente novamente!" });
+      res.status({ message: "Erro do servidor, tente novamente!" });
     }
   },
   changePassword: async (req, res) =>{

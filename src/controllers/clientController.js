@@ -19,39 +19,39 @@ const clientController = {
       if (!fullName) {
         return res
           .status(422)
-          .json({ msg: "O nome completo do cliente é obrigatório!" });
+          .json({ message: "O nome completo do cliente é obrigatório!" });
       }
       if (!email) {
         return res
           .status(422)
-          .json({ msg: "O email do cliente é obrigatório!" });
+          .json({ message: "O email do cliente é obrigatório!" });
       }
       if (!phone || !/^\d{9}$/.test(phone)) {
         return res
           .status(422)
           .json({
-            msg: "O número de telefone do cliente é obrigatório e deve ter 9 dígitos!",
+            message: "O número de telefone do cliente é obrigatório e deve ter 9 dígitos!",
           });
       }
       if (!password) {
         return res
           .status(422)
-          .json({ msg: "A palavra-passe do cliente é obrigatório!" });
+          .json({ message: "A palavra-passe do cliente é obrigatório!" });
       }
       if (!age || age < 18) {
         return res
           .status(422)
-          .json({ msg: "A idade mínima do cliente deve ser 18 anos!" });
+          .json({ message: "A idade mínima do cliente deve ser 18 anos!" });
       }
       if (!n_acession || !/^\d{8}$/.test(n_acession)) {
         return res
           .status(422)
           .json({
-            msg: "O número de adesão do cliente é obrigatório e deve ter 8 dígitos!",
+            message: "O número de adesão do cliente é obrigatório e deve ter 8 dígitos!",
           });
       }
       if (confirmPassword !== password) {
-        return res.status(422).json({ msg: "As senhas são diferentes!" });
+        return res.status(422).json({ message: "As senhas são diferentes!" });
       }
 
       //Check email address Client
@@ -65,7 +65,7 @@ const clientController = {
       //check n_acession exist
       const n_acessionExist = await Client.findOne({ n_acession: n_acession });
       if (n_acessionExist) {
-        return res.status(422).json({ msg: "Este número de Adesão já existe" });
+        return res.status(422).json({ message: "Este número de Adesão já existe" });
       }
 
       //create password
@@ -83,10 +83,10 @@ const clientController = {
       });
 
       await client.save();
-      res.status(201).json({client, msg: "Cliente registrado com sucesso!" });
+      res.status(201).json({client, message: "Cliente registrado com sucesso!" });
     } catch (error) {
       console.log(error);
-      res.status({ msg: "Erro do servidor, tente novamente!" });
+      res.status({ message: "Erro do servidor, tente novamente!" });
     }
   },
   getClient: async (req, res, next) =>{
@@ -97,7 +97,7 @@ const clientController = {
       const client = await Client.findById(id, '-password');
   
       if (!client) {
-        return res.status(404).json({ msg: "Utilizador não encontrado!" });
+        return res.status(404).json({ message: "Utilizador não encontrado!" });
       }
   
       // Cliente encontrado, retornar os detalhes do cliente
@@ -105,7 +105,7 @@ const clientController = {
     } catch (error) {
       // Se ocorrer algum erro ao buscar o cliente
       console.error("Erro ao buscar o cliente:", error);
-      return res.status(500).json({ msg: "Erro do servidor ao buscar o cliente!" });
+      return res.status(500).json({ message: "Erro do servidor ao buscar o cliente!" });
     }
 
   },

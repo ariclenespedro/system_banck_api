@@ -28,8 +28,8 @@ const transactionController = {
               return res.status(400).send({message:"A descrição da transação é obrigatória."});
           }
 
-            if(entity_id === 1140223){
-                return res.status(422).json({ msg: "O código da Entidade é desconhecida!" });
+            if(entity_id !== "1140223"){
+                return res.status(422).json({ message: "O código da Entidade é desconhecida!" });
               }
 
             // Verificar se o número de referência já existe

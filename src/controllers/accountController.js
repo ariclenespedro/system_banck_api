@@ -15,17 +15,17 @@ const account = {
       } = req.body;
 
       if (!clientId) {
-        return res.status(422).json({ msg: "O Id do cliente é obrigatório!" });
+        return res.status(422).json({ message: "O Id do cliente é obrigatório!" });
       }
 
       if (!n_account) {
         return res
           .status(422)
-          .json({ msg: "O número da conta do cliente é obrigatório!" });
+          .json({ message: "O número da conta do cliente é obrigatório!" });
       }
 
       if (!iban) {
-        return res.status(422).json({ msg: "A numéro de IBAN é obrigatório!" });
+        return res.status(422).json({ message: "A numéro de IBAN é obrigatório!" });
       }
 
       // Verifique se o cliente existe
@@ -45,14 +45,14 @@ const account = {
       //check n_account exist
       const n_accountExists = await Account.findOne({ n_account: n_account });
       if (n_accountExists) {
-        return res.status(422).json({ msg: "Este número de Conta já existe" });
+        return res.status(422).json({ message: "Este número de Conta já existe" });
       }
       //check Iban exists
       const n_ibanExists = await Account.findOne({ iban: iban });
       if (n_ibanExists) {
         return res
           .status(422)
-          .json({ msg: "Este IBAN já está a ser utilizado." });
+          .json({ message: "Este IBAN já está a ser utilizado." });
       }
 
       // Crie uma nova conta bancária
