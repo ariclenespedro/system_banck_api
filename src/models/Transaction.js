@@ -27,7 +27,6 @@ const transactionSchema = new mongoose.Schema({
     entity_id: {
         type: String,
         required: true,
-        unique: true,
     },
     description: {
         type: String,
