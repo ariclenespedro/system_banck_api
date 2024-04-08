@@ -25,8 +25,8 @@ db();
 
 //Routers
 const routes = require('./src/routes/router');
-/* const routesApipayment = require('./src/api_payment/routes/routes'); */
-/* app.use('/apiPayments', routesApipayment); */
+const routesApipayment = require('./src/api_payment/routes/routes');
+app.use('/apiPayments', routesApipayment);
 app.use('/api', routes);
 
 
