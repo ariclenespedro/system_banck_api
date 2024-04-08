@@ -25,9 +25,11 @@ db();
 
 //Routers
 const routes = require('./src/routes/router');
+app.use('/api', routes);
+
+// Routes for api payments: entitys, references and payments
 const routesApipayment = require('./src/api_payment/routes/routes');
 app.use('/apiPayments', routesApipayment);
-app.use('/api', routes);
 
 
 // Definindo uma rota Pública.
