@@ -1,15 +1,16 @@
-const Reference = require('../models/Reference');
+const ReferencePayment = require('../models/Reference');
+const helper = require('../../helpers/generateReference');
 
 const reference = {
     generate: async (req, res) =>{
         try {
             // Gerar código aleatório de 15 dígitos
-            const referenceCode = generateRandomReferenceCode();
+            const referenceCode = helper.generateRandomReferenceCode();
     
             // Verificar se o código gerado já existe na base de dados
             const existingReference = await ReferencePayment.findOne({ reference_code: referenceCode });
             while (existingReference) {
-                const newReferenceCode = generateRandomReferenceCode();
+                const newReferenceCode = helper.generateRandomReferenceCode;
                 const existingReference = await ReferencePayment.findOne({ newReferenceCode: referenceCode });   
             }
             /* if (existingReference) {
