@@ -1,24 +1,27 @@
 const ReferencePayment = require('../models/Reference');
+const Entity = require('../models/Entity');
 const helper = require('../../helpers/generateReference');
 
 const reference = {
     generate: async (req, res) =>{
         try {
+
+            const {reference_code, amount, entity_id, service } = req.body;
             // Gerar código aleatório de 15 dígitos
-            const referenceCode = helper.generateRandomReferenceCode();
+            let referenceCode = helper.generateRandomReferenceCode();
     
             // Verificar se o código gerado já existe na base de dados
-            const existingReference = await ReferencePayment.findOne({ reference_code: referenceCode });
+            let existingReference = await ReferencePayment.findOne({ reference_code: referenceCode });
             while (existingReference) {
-                const newReferenceCode = helper.generateRandomReferenceCode;
-                const existingReference = await ReferencePayment.findOne({ newReferenceCode: referenceCode });   
+                referenceCode = helper.generateRandomReferenceCode();
+                existingReference = await ReferencePayment.findOne({ newReferenceCode: referenceCode });
             }
-            /* if (existingReference) {
-                // Se o código já existe, gerar um novo
-                return res.status(409).send({ error: 'Código de referência já existe. Tente novamente.' });
-            } */
-    
+            
             // Verificar se a entidade que solicita a referência existe
+            const existsEntity = await Entity.findOne({ n_entity: entity_id});
+            if (!existsEntity) {
+                return res.status(404).send({ message: 'Entidade inválida!' }); //
+            }
             // Aqui você deve implementar a lógica para verificar se a entidade existe no banco de dados
     
             // Criar uma nova referência

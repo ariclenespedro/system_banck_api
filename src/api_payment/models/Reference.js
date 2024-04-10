@@ -14,8 +14,18 @@ const referenceShema = mongoose.Schema({
         required: true,
         unique: true
     },
+    service : {
+        type: String,
+        required: true
+    },
+    entity: {
+        type: Schema.Types.ObjectId,
+        ref: 'Entity',
+        required: true
+    }
     
-});
+},{timestamps: true}
+);
 
 const Reference = mongoose.model('Reference', referenceShema);
 
