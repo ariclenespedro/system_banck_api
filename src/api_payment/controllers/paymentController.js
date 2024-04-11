@@ -1,5 +1,6 @@
 const Payment = require('../models/Payment');
 const ReferencePayment = require('../models/Reference');
+const Entity = require('../models/Entity');
 
 const paymentController = {
     validatePayment: async (req, res) => {
@@ -8,9 +9,15 @@ const paymentController = {
             const { terminal_type, reference_code, entity_id, amount, transaction_id } = req.body;
 
             //? Verificar se a referência existe e corresponde à entidade correta
-            const reference = await ReferencePayment.findOne({ reference_code, entity: entity_id });
+            const reference = await ReferencePayment.findOne({ reference_code : reference_code });
             if (!reference) {
                 return res.status(404).send({ message: 'Referência inválida ou não encontrada.' });
+            }
+
+            // ? Buscar os dados da Entidade e verificar se corresponde à referência.
+            const entity = await Entity.findById(reference.entity._id);
+            if(entity.n_entity !== entity_id) {
+                return res.status(404).send({ message: 'Número de entidade não corresponde à referência!' });
             }
 
             //? Verificar existencia do valor do campo amount
