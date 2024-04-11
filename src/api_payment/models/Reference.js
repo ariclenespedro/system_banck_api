@@ -7,7 +7,7 @@ const referenceShema = mongoose.Schema({
     },
     end_datetime: {
         type: Date,
-        required: true,
+        required: false,
         default: () => {
             // * Define a data e hora atual
             const now = new Date();
