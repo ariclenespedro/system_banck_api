@@ -7,7 +7,14 @@ const referenceShema = mongoose.Schema({
     },
     end_datetime: {
         type: Date,
-        required: true
+        required: true,
+        default: () => {
+            // * Define a data e hora atual
+            const now = new Date();
+            // Adiciona 24 horas (24 * 60 * 60 * 1000 milissegundos)
+            const nextDay = new Date(now.getTime() + (24 * 60 * 60 * 1000));
+            return nextDay;
+        }
     },
     reference_code: {
         type: String,
@@ -19,7 +26,7 @@ const referenceShema = mongoose.Schema({
         required: true
     },
     entity: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'Entity',
         required: true
     }
@@ -28,5 +35,6 @@ const referenceShema = mongoose.Schema({
 );
 
 const Reference = mongoose.model('Reference', referenceShema);
+
 
 module.exports = Reference;

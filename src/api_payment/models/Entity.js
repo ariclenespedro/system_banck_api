@@ -15,7 +15,8 @@ const entityShema = new Shema({
         required: false,
     }
     
-});
+},{timestamps: true}
+);
 
 const Entity = mongoose.model('Entity',entityShema);
 
