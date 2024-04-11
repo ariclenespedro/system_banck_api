@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const paymentSchema = new Schema({
     reference_id: {
         type: Schema.Types.ObjectId,
-        ref: 'ReferencePayment',
+        ref: 'Reference',
         required: true
     },
     transaction_id: {

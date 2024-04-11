@@ -1,8 +1,12 @@
 const Transaction = require('../models/Transaction');
 const Client = require('../models/Client');
+const { default: axios } = require('axios');
+
+const router = require('express').Router();
+require("dotenv").config();
 
 const transactionController = {
-    paymentForReferences: async (req,res) => {
+    paymentForReferences: async (req,res, next) => {
         try {
           const client_id = req.params.client_id;
             const { n_reference, amount, entity_id, description } = req.body;
@@ -27,6 +31,10 @@ const transactionController = {
             if(!description){
               return res.status(400).send({message:"A descrição da transação é obrigatória."});
           }
+
+          const BaseUrl = process.env.BASEURL;
+          const resApiPaymentReference = await axios.post(`${BaseUrl}/apiPayments`)
+          
 
             if(entity_id !== "1140223"){
                 return res.status(422).json({ message: "O código da Entidade é desconhecida!" });
