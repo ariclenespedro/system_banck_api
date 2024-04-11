@@ -7,8 +7,12 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+/**
+ * 
+ *  
+ * ? This is my coment */
 
-app.use(cors());
+app.use(cors()); 
 
 //config JSON response
 app.use(express.json());
@@ -34,7 +38,7 @@ app.use('/apiPayments', routesApipayment);
 
 // Definindo uma rota Pública.
 app.get("/", (req, res) => {
-  res.status(200).json({ mgs: "Bem-vindo à API System Bank" });
+  res.status(200).json({ mgs: "Bem-vindo à API System Bank" }); // * Endpoint PUBLIC
 });
 
 
