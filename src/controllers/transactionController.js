@@ -9,7 +9,7 @@ const transactionController = {
     paymentForReferences: async (req,res, next) => {
         try {
           const client_id = req.params.client_id;
-            const { n_reference, amount, entity_id, description } = req.body;
+            const { token, n_reference, amount, entity_id, description } = req.body;
 
             // Verifique se o cliente existe
             const client = await Client.findById(client_id);
@@ -32,19 +32,6 @@ const transactionController = {
               return res.status(400).send({message:"A descrição da transação é obrigatória."});
           }
 
-          const BaseUrl = process.env.BASEURL;
-          const resApiPaymentReference = await axios.post(`${BaseUrl}/apiPayments`)
-          
-
-            if(entity_id !== "1140223"){
-                return res.status(422).json({ message: "O código da Entidade é desconhecida!" });
-              }
-
-            // Verificar se o número de referência já existe
-            const existingTransaction = await Transaction.findOne({ n_reference });
-            if (existingTransaction) {
-              return res.status(400).json({ message: 'Número de referência já existe.' });
-            }
         
             // Criar uma nova transação
             const newTransaction = new Transaction({
@@ -58,6 +45,27 @@ const transactionController = {
         
             // Salvar a transação no banco de dados
             await newTransaction.save();
+
+            const BaseUrl = process.env.BASEURL;
+
+          const config = {
+            baseURL: baseURL,
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+          };
+
+          const resApiPaymentReference = await axios.post(`${BaseUrl}/apiPayments/payment/paymentReference`,
+          {
+            reference_code: n_reference,
+            entity_id: entity_id,
+            amount:amount,
+            terminal_type: 'Internet Banking',
+            transaction_id: newTransaction._id 
+          },
+           config
+           );
         
             return res.status(201).json({ message: 'Transação registrada com sucesso.' });
           } catch (error) {

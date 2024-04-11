@@ -8,7 +8,8 @@ const paymentSchema = new Schema({
         required: true
     },
     transaction_id: {
-        type: Number,
+        type: Schema.Types.ObjectId,
+        ref: 'Transaction',
         required: true
     },
     terminal_type: {
