@@ -1,4 +1,5 @@
 const Transaction = require('../models/Transaction');
+const Account = require('../models/Account');
 const Client = require('../models/Client');
 const { default: axios } = require('axios');
 
@@ -8,7 +9,7 @@ require("dotenv").config();
 const transactionController = {
     paymentForReferences: async (req,res, next) => {
         try {
-          const client_id = req.params.client_id;
+            const client_id = req.params.client_id;
             const { token, n_reference, amount, entity_id, description } = req.body;
 
             // Verifique se o cliente existe
@@ -32,7 +33,12 @@ const transactionController = {
               return res.status(400).send({message:"A descrição da transação é obrigatória."});
           }
 
-        
+          const account = await Account.findOne({client_id:client_id});
+          const balanceAfter = await account.updateOne({balance:( parseFloat(account.balance) - amount) });
+          console.log(account);
+
+
+    
             // Criar uma nova transação
             const newTransaction = new Transaction({
               n_reference,
@@ -70,7 +76,8 @@ const transactionController = {
             return res.status(201).json({ message: 'Transação registrada com sucesso.' });
           } catch (error) {
             console.error('Erro ao registrar a transação:', error);
-            return res.status(500).json({ message: 'Erro ao registrar a transação.' });
+            await Account.updateOne({balance: parseFloat(account.balance) + amount });
+            return res.status(500).json({ message: 'Erro ao registrar a transação.', error });
           }
     }
 };
