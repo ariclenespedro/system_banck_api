@@ -43,13 +43,13 @@ const paymentController = {
                 terminal_location: req.body.terminal_location,
                 terminal_id: req.body.terminal_id,
                 amount,
-                fee: req.body.fee,
-                datetime: req.body.datetime
+                fee: 0,
+                datetime: new Date()
             });
 
             await newPayment.save();
 
-            res.status(200).send({ message: 'Pagamento validado com sucesso.', data: newPayment });
+            res.status(201).send({ message: 'Pagamento validado e registrado com sucesso.', status: 201, data: newPayment });
         } catch (error) {
             res.status(500).send({ message: 'Erro ao validar o pagamento.', error });
         }
