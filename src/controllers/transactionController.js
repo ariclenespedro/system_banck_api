@@ -3,7 +3,6 @@ const Account = require('../models/Account');
 const Client = require('../models/Client');
 const { default: axios } = require('axios');
 
-const router = require('express').Router();
 require("dotenv").config();
 
 const transactionController = {
@@ -70,7 +69,6 @@ const transactionController = {
                     terminal_type: 'Internet Banking',
                     transaction_id: newTransaction._id
                 }, config).then( async (response) => {
-                  console.log(response);
                   if(response.status === 201) {
                     // Commit da transação se não houver erro na chamada Axios
                     await session.commitTransaction();
@@ -84,7 +82,6 @@ const transactionController = {
                 // Rollback da transação em caso de erro
                 await session.abortTransaction();
                 session.endSession();
-                console.error('Erro ao registrar a transação:', error);
 
                 // Reverter o saldo da conta se a transação de atualização tiver ocorrido
                 if (account) {

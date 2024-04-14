@@ -53,7 +53,20 @@ const paymentController = {
         } catch (error) {
             res.status(500).send({ message: 'Erro ao validar o pagamento.', error });
         }
-    }
+    },
+    listPayments: async (req, res) => {
+
+        try {
+            // Consulta todos os pagamentos no banco de dados
+            const payments = await Payment.find();
+
+            // Retorna a lista de pagamentos
+            res.status(200).json({ message: 'Lista de pagamentos obtida com sucesso.', data: payments });
+        } catch (error) {
+            // Se houver algum erro durante a consulta ao banco de dados
+            res.status(500).json({ message: 'Erro ao obter a lista de pagamentos.', error });
+        }
+    },
 };
 
 module.exports = paymentController;
