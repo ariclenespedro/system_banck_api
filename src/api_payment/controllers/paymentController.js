@@ -39,10 +39,11 @@ const paymentController = {
                 reference_id: reference._id,
                 transaction_id,
                 terminal_type,
-                terminal_transaction_id: req.body.terminal_transaction_id,
-                terminal_location: req.body.terminal_location,
-                terminal_id: req.body.terminal_id,
+                terminal_transaction_id: null,
+                terminal_location: null,
+                terminal_id: null,
                 amount,
+                entity_id,
                 fee: 0,
                 datetime: new Date()
             });
