@@ -3,9 +3,27 @@ const Schema = mongoose.Schema;
 
 const paymentSchema = new Schema({
     reference_id: {
-        type: Schema.Types.ObjectId,
-        ref: 'Reference',
-        required: true
+        id:{
+            type: Object,
+            required:true,
+        },
+        amount: {
+            type: Number,
+            required:true,
+        },
+        reference_code: {
+            type: String,
+            required: true,
+            unique: true
+        },
+        service : {
+            type: String,
+            required: true
+        },
+        entity : {
+            type: String,
+            required: true
+        },
     },
     transaction_id: {
         type: Schema.Types.ObjectId,
