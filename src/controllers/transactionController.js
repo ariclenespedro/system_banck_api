@@ -94,6 +94,18 @@ const transactionController = {
             console.error('Erro ao iniciar a transação:', error);
             return res.status(500).json({ message: 'Erro ao iniciar a transação.', error });
         }
+    },
+    listTransictions: async (req,res) => {
+      try{
+        const client_id = req.body.client_id;
+
+        const transactions = await Transaction.find({client: client_id});
+        
+        return res.status(200).json({message: 'Lista de Movimentos bancário retornada!', data:transactions});
+
+      }catch (error) {
+        return res.status(500).json({ message: 'Erro ao buscar os movimentos do cliente',error}); 
+      }
     }
 };
 
