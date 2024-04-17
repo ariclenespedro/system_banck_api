@@ -5,7 +5,7 @@ const cors = require('cors');
 
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 /**
  * 
@@ -40,34 +40,3 @@ app.use('/apiPayments', routesApipayment);
 app.get("/", (req, res) => {
   res.status(200).json({ mgs: "Bem-vindo à API System Bank" }); // * Endpoint PUBLIC
 });
-
-
-
-
-
-
-
-//Payment references route
-app.post('/cliente/payments/references', async (req, res) => {
-  try {
-    const {n_reference,amount,clientID,entity_id} = req.body;
-
-    // Verificar se os dados necessários foram fornecidos
-    if (!clientID || !amount) {
-      return res.status(400).json({ message: 'É necessário fornecer o ID do cliente e o valor da transação' });
-    }
-    if (!n_reference) {
-      return res.status(422).json({ message: "O número de referência é obrigatório!" });
-    }
-    if (!entity_id) {
-      return res.status(422).json({ message: "O ID da Entidade é obrigatório!" });
-    }
-
-    if(entity_id === 1140223){
-      return res.status(422).json({ message: "O ID da Entidade desconhecida!" });
-    }
-  } catch (error) {
-    
-  }
-})
-
