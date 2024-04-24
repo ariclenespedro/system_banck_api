@@ -41,6 +41,7 @@ const transactionController = {
             .send({ message: "Saldo insuficiente para realizar a transação." });
         }
         const balanceAfter = await account.updateOne({ balance: newBalance });
+        console.log(newBalance);
 
         // Criar uma nova transação
         newTransaction = new Transaction({
@@ -50,6 +51,7 @@ const transactionController = {
           status: "completed",
           entity_id,
           description: description,
+          balance_after: newBalance,
         });
 
         // Salvar a transação no banco de dados
