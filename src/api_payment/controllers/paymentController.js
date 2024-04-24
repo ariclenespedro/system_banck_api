@@ -8,6 +8,9 @@ const paymentController = {
             //? Extrair os dados do corpo da requisição
             const { terminal_type, reference_code, entity_id, amount, transaction_id } = req.body;
 
+            console.log('code_reference', reference_code);
+            console.log('transaction_id', transaction_id);
+
             //? Verificar se a referência existe e corresponde à entidade correta
             const reference = await ReferencePayment.findOne({ reference_code : reference_code });
             if (!reference) {
@@ -36,8 +39,8 @@ const paymentController = {
 
             // Salvar o pagamento no banco de dados
             const newPayment = new Payment({
-                reference_id: reference._id,
-                transaction_id,
+                reference_id: reference_code,
+                transaction_id: transaction_id,
                 terminal_type,
                 terminal_transaction_id: null,
                 terminal_location: null,
