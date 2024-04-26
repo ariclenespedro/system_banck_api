@@ -116,6 +116,8 @@ const transactionController = {
         .json({ message: "Erro ao iniciar a transação.", error });
     }
   },
+
+  //? Lista todas as transações de um determinado cliente
   listTransictions: async (req, res) => {
     try {
       const client_id = req.params.client_id;
@@ -133,6 +135,22 @@ const transactionController = {
       return res.status(500).json({ message: "Erro ao buscar os movimentos do cliente", error });
     }
   },
+
+  //? Pega uma determinada transação!
+  getTransition: async (req, res) =>{
+    try {
+      const transiction_id = req.params.transiction_id;
+     
+      const bid = new BSON.ObjectId( transiction_id )
+      console.log(bid);
+      /* const transition = await Transiction.find({"_id":bid}); */
+
+      return res.status(200).json({message:"Transação retornada com sucesso", data:transition })
+    } catch (error) {
+      return res.status(500).json({message: "Erro ao buscar movimento especificado", error: error});
+    }
+  },
+
 };
 
 module.exports = transactionController;
