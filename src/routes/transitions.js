@@ -10,6 +10,6 @@ router.route("/:client_id/payments/references").post(auth, (req, res) => transic
 router.route("/:client_id/transictions").get(auth, (req, res) => transictionController.listTransictions(req, res));
 
 //? Get specific transiction
-router.route("/:client_id/transiction/:transiction_id").get(auth, (req, res) => transictionController.getTransition(req, res));
+router.route("/transiction/:transiction_id").get(auth, (req, res) => transictionController.getTransition(req, res));
 
 module.exports = router;

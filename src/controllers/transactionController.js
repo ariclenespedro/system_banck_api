@@ -139,11 +139,11 @@ const transactionController = {
   //? Pega uma determinada transação!
   getTransition: async (req, res) =>{
     try {
-      const transiction_id = req.params.transiction_id;
-     
-      const bid = new BSON.ObjectId( transiction_id )
-      console.log(bid);
-      /* const transition = await Transiction.find({"_id":bid}); */
+
+      const transition = await Transaction.findById(req.params.transiction_id);
+      if(!transition){
+        return res.status(404).send({message:'Movimento bancário não encontrado!'});
+      }
 
       return res.status(200).json({message:"Transação retornada com sucesso", data:transition })
     } catch (error) {
