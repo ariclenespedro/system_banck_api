@@ -3,17 +3,29 @@ const Account = require("../models/Account");
 const Client = require("../models/Client");
 const { default: axios } = require("axios");
 
+/* 
+? API IMPORTS
+  */
+const Payment = require('../api_payment/models/Payment');
+const ReferencePayment = require('../api_payment/models/Reference');
+const Entity = require('../api_payment/models/Entity');
+
 require("dotenv").config();
 
 const transactionController = {
   paymentForReferences: async (req, res, next) => {
     let account;
     let newTransaction;
+    let amountControl = 0;
+    let newBalance; 
+    let session
 
     try {
+      
       const client_id = req.params.client_id;
       const { token, n_reference, amount, entity_id, description } = req.body;
 
+      //!validations
       const client = await Client.findById(client_id);
       if (!client) {
         return res.status(404).json({ message: "Cliente não encontrado" });
@@ -27,89 +39,103 @@ const transactionController = {
       if (!n_reference || !entity_id || !description) {
         return res.status(400).send({ message: "Parâmetros inválidos." });
       }
+      
+      //? Verificar se a referência existe e corresponde à entidade correta
+      const reference = await ReferencePayment.findOne({ reference_code : n_reference });
+      if (!reference) {
+          return res.status(404).send({ message: 'Referência inválida ou não encontrada.' });
+      }
 
-      // Iniciar a transação
-      const session = await Transaction.startSession();
+      //? verificar se a referencia já foi usada
+      const referenceUsed = await Transaction.findOne({n_reference: n_reference});
+      if (referenceUsed) {
+        return res.status(404).send({ message: 'Referência já utilizada' });
+      }
+
+      // ? Buscar os dados da Entidade e verificar se corresponde à referência.
+      const entity = await Entity.findById(reference.entity._id);
+      if(entity.n_entity !== entity_id) {
+          return res.status(404).send({ message: 'Número de entidade não corresponde à referência!' });
+      } 
+
+      //? Verificar existencia do valor do campo amount
+      if(!amount){
+        return res.status(404).send({ message: 'O montante é um campo obrigatório!' });
+      }
+
+      //? Verificar se o montante do pagamento corresponde ao montante da referência
+      if (amount < reference.amount) {
+        return res.status(400).send({ message: 'Montante do pagamento inválido.' });
+      }
+
+      //* Iniciar a transação
+      session = await Transaction.startSession();
       session.startTransaction();
 
-      try {
-        account = await Account.findOne({ client_id: client_id });
-        const newBalance = parseFloat(account.balance) - amount;
-        if (newBalance < 0) {
-          return res
-            .status(402)
-            .send({ message: "Saldo insuficiente para realizar a transação." });
-        }
-        const balanceAfter = await account.updateOne({ balance: newBalance });
-        console.log(newBalance);
+      
+      account = await Account.findOne({ client_id: client_id });
+      newBalance = parseFloat(account.balance) - amount;
+      amountControl = amount;
 
-        // Criar uma nova transação
-        newTransaction = new Transaction({
-          n_reference,
-          amount,
-          client: client.id,
-          status: "completed",
-          entity_id,
-          description: description,
-          balance_after: newBalance,
-        });
-
-        // Salvar a transação no banco de dados
-        await newTransaction.save();
-
-        const BaseUrl = process.env.BASEURL;
-        const config = {
-          baseURL: BaseUrl,
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        };
-
-        // Fazer a chamada Axios
-        axios
-          .post(
-            `${BaseUrl}/apiPayments/payment/paymentReference`,
-            {
-              reference_code: n_reference,
-              entity_id: entity_id,
-              amount: amount,
-              terminal_type: "Internet Banking",
-              transaction_id: newTransaction._id,
-            },
-            config
-          )
-          .then(async (response) => {
-            if (response.status === 201) {
-              // Commit da transação se não houver erro na chamada Axios
-              await session.commitTransaction();
-              session.endSession();
-              return res
-                .status(201)
-                .json({ message: response.message, data: response.data });
-            } else {
-              return res
-                .status(response.status)
-                .json({ message: response.message, error: response.error });
-            }
-          });
-      } catch (error) {
-        // Rollback da transação em caso de erro
-        await session.abortTransaction();
-        session.endSession();
-
-        // Reverter o saldo da conta se a transação de atualização tiver ocorrido
-        if (account) {
-          await Account.updateOne({
-            balance: parseFloat(account.balance) + amount,
-          });
-        }
-
+      //? Verificar se o saldo é sufuciente
+      if (newBalance < 0) {
         return res
-          .status(500)
-          .json({ message: "Erro ao registrar a transação.", error });
+          .status(402)
+          .send({ message: "Saldo insuficiente para realizar a transação." });
       }
+
+      await account.updateOne({ balance: newBalance });
+
+      //? Criar uma nova transação
+      newTransaction = new Transaction({
+        n_reference,
+        amount,
+        client: client.id,
+        status: "completed",
+        entity_id,
+        description: description,
+        balance_after: newBalance,
+      });
+
+      //* Salvar a transação no banco de dados
+      await newTransaction.save();
+
+      //* Commit da transação se não houver erro na chamada Axios
+      await session.commitTransaction();
+
+      //? ---------API------------- Salvar o pagamento no banco de dados
+      const newPayment = new Payment({
+        reference_id: n_reference,
+        transaction_id: newTransaction._id,
+        terminal_type: "Internet Banking",
+        terminal_transaction_id: null,
+        terminal_location: null,
+        terminal_id: null,
+        amount:amount,
+        entity_id:entity_id,
+        fee: 0,
+        datetime: new Date()
+    });
+
+    await newPayment.save();
+
+    // Commit da transação se não houver erro na chamada Axios
+    await session.commitTransaction();
+    session.endSession();
+
+    res.status(201).send({ message: 'Pagamento validado e registrado com sucesso.', data: newTransaction });
+        
     } catch (error) {
+
+      //? Reverter o saldo da conta se a transação de atualização tiver ocorrido
+      if (account && newBalance < account.balance)  {
+        await Account.updateOne({
+          balance: parseFloat(account.balance) + amountControl,
+        });
+      }
+      // Rollback da transação em caso de erro
+      await session.abortTransaction();
+      session.endSession();
       console.error("Erro ao iniciar a transação:", error);
       return res
         .status(500)
