@@ -7,6 +7,9 @@ const transictionController = require('../controllers/transactionController');
 router.route("/:client_id/payments/references").post(auth, (req, res) => transictionController.paymentForReferences(req, res));
 
 //? Get all transictions 
-router.route("/:client_id/payments").post(auth, (req, res) => transictionController.listTransictions(req, res));
+router.route("/:client_id/transictions").get(auth, (req, res) => transictionController.listTransictions(req, res));
+
+//? Get specific transiction
+router.route("/transiction/:transiction_id").get(auth, (req, res) => transictionController.getTransition(req, res));
 
 module.exports = router;
